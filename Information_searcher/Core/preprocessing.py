@@ -1,39 +1,35 @@
 #!/usr/bin/env python
 # coding: utf-8
-
-# In[1]:
-
+'''
+Выполняет предобработку корпуса - токенизацию, стемминг,
+удаление стоп-слов
+'''
+import re
 
 import pandas as pd
 import numpy as np
-import seaborn as sns
-
-
-df = pd.read_csv('../Data/articles1.csv')
-df.head()
-
-
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-import re
+from nltk.stem import PorterStemmer
+from nltk import download
 
 
-def tokenize_batch(series_batch):
-    '''
-    Токенизирует тексты из датафрейма, перед этим приводя к lowercase
-    
-    Returns
-    -------
-    tokenized : pandas.Series
-        pandas.Series of list of str
-    '''
-    return series_batch.map(str.lower).map(word_tokenize)
-
-
+download('punkt')
+download("stopwords")
+ps = PorterStemmer()
+# Стоп-слова:
 tokenized_stopwords = set()
 for word in stopwords.words('english'):
     tokenized_stopwords.update(word_tokenize(word))
+# Валидные слова:
 reg_exp = re.compile(r"[\w']+$")
+
+
+def tokenize(s):
+    '''
+    Токенизирует строку, перед этим приводя к lowercase
+    '''
+    return word_tokenize(s.lower())
 
 
 def is_bad_word(word):
@@ -44,34 +40,42 @@ def is_bad_word(word):
         return False
     
     
-def filter_tokenized_batch(series_batch):
+def filter_tokenized(tokens):
     '''
     Удаляет из текстов неугодные слова.
     
-    Returns
-    -------
-    filtered : pandas.Series
-        pandas.Series of list of str
+    Parameters
+    ----------
+    tokens : list of str
+        список слов
     '''
-    return series_batch.map(
-        lambda l: [word for word in l if not is_bad_word(word)]
-    )
-
-def stem_batch(series_batch):
-    from nltk.stem import PorterStemmer
-    ps = PorterStemmer()
-    return series_batch.map(lambda l: [ps.stem(elem) for elem in l])
+    return [word for word in tokens if not is_bad_word(word)]
 
 
-def preprocess_batch(df_batch):
-    return stem_batch(filter_tokenized_batch(tokenize_batch(df_batch['content'])))
+def stem(tokens):
+    '''
+    Производит стэмминг
+    
+    Parameters
+    ----------
+    tokens : list of str
+        список слов
+    '''
+    return [ps.stem(elem) for elem in tokens]
 
-preprocess_batch(df[:10])
+
+def preprocess(s):
+    '''Приводит нижнему регистру, токенизирует, фильтрует, стеммит'''
+    return stem(filter_tokenized(tokenize(s)))
 
 
-for batch in pd.read_csv('../Data/articles1.csv', chunksize=10):
-    preprocess_batch(batch).to_csv('Data/stemmed.csv', mode='a', index=False, header=None)
-
-df2 = pd.read_csv('../Data/stemmed.csv', index_col=False, header=None)
-
-df2.head()
+if __name__ == '__main__':
+    print('Обработка текстов началась')
+    from tqdm import tqdm
+    pbar = tqdm(total=10)
+    for batch_id, batch in enumerate(pd.read_csv('Data/articles1.csv', chunksize=5000)):
+        preprocessed_batch = batch[['content']].applymap(preprocess)
+        preprocessed_batch.to_csv(f'Data/stemmed_blocks/{batch_id}.csv')
+        pbar.update()
+    pbar.close()
+    print('Обработка текстов завершилась')
