@@ -13,6 +13,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk import download
 
+from core.constants import BLOCKS_NUMBER
 
 download('punkt')
 download("stopwords")
@@ -72,8 +73,9 @@ def preprocess(s):
 if __name__ == '__main__':
     print('Обработка текстов началась')
     from tqdm import tqdm
-    pbar = tqdm(total=10)
-    for batch_id, batch in enumerate(pd.read_csv('Data/articles1.csv', chunksize=5000)):
+    pbar = tqdm(total=BLOCKS_NUMBER)
+    for batch_id, batch in enumerate(pd.read_csv('Data/articles1.csv',
+                                                 chunksize=CHUNKSIZE)):
         preprocessed_batch = batch[['content']].applymap(preprocess)
         preprocessed_batch.to_csv(f'Data/stemmed_blocks/{batch_id}.csv')
         pbar.update()

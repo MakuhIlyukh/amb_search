@@ -1,0 +1,7 @@
+from math import ceil
+
+PATH_TO_STEMMED_BLOCK = 'Data/stemmed_blocks/'
+PATH_TO_INVERTED_INDEX = 'Data/inv_index/'
+TEXTS_NUMBER = 50000
+CHUNKSIZE = 5000
+BLOCKS_NUMBER = ceil(TEXTS_NUMBER / CHUNKSIZE)
