@@ -1,6 +1,9 @@
 import json
+from ast import literal_eval
 
-from core.constants import (PATH_TO_STEMMED_BLOCK, PATH_TO_INVERTED_INDEX
+import pandas as pd
+
+from core.constants import (PATH_TO_STEMMED_BLOCK, PATH_TO_INVERTED_INDEX,
                             BLOCKS_NUMBER)
 
 
@@ -18,10 +21,10 @@ def load_block(id):
     docs : list of (int, set of words)
         список пар (id документа, множество слов документа)
     '''
-    docs = list
+    docs = list()
     df = pd.read_csv(PATH_TO_STEMMED_BLOCK + str(id) + '.csv')
     for ind, row in df.iterrows():
-        set_of_words = set(json.loads(row['content']))
+        set_of_words = set(literal_eval(row['content']))
         docs.append((ind, set_of_words))
     return docs
 
