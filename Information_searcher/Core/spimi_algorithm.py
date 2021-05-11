@@ -1,10 +1,14 @@
 import json
 from ast import literal_eval
-
 import pandas as pd
-
-from core.constants import (PATH_TO_STEMMED_BLOCK, PATH_TO_INVERTED_INDEX,
+import ast
+from Core.constants import (PATH_TO_STEMMED_BLOCK, PATH_TO_INVERTED_INDEX,
                             BLOCKS_NUMBER)
+
+
+def load_inverted_index_from_file(self, letter: str):
+    with open(r'./OutputData/' + letter + '.txt', 'r') as f:
+        self.inverted_index[letter] = ast.literal_eval(f.read())
 
 
 def load_block(id):
@@ -22,7 +26,7 @@ def load_block(id):
         список пар (id документа, множество слов документа)
     '''
     docs = list()
-    df = pd.read_csv(PATH_TO_STEMMED_BLOCK + str(id) + '.csv')
+    df = pd.read_csv(PATH_TO_STEMMED_BLOCK + str(id) + '.csv', index_col=0)
     for ind, row in df.iterrows():
         set_of_words = set(literal_eval(row['content']))
         docs.append((ind, set_of_words))
