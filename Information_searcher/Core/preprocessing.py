@@ -13,7 +13,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk import download
 
-from core.constants import BLOCKS_NUMBER
+from Core.constants import BLOCKS_NUMBER, CHUNKSIZE
 
 download('punkt')
 download("stopwords")
