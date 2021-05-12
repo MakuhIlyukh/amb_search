@@ -5,6 +5,8 @@ import pandas as pd
 from nltk.stem import PorterStemmer
 from Core.parse_arguments import polish_notation_reverse
 from Core.searching import search
+from Core.constants import CHUNKSIZE, BLOCKS_NUMBER
+from Core.preprocessing import preprocess
 from enum import Enum
 import sys
 import Core.constants
@@ -19,7 +21,19 @@ if __name__ == '__main__':
     args = parser.parse_args().echo
     
     if not os.path.exists('Data/stemmed_blocks/0.csv'):
+        print('Обработка текстов началась')
+        from tqdm import tqdm
+        pbar = tqdm(total=BLOCKS_NUMBER)
+        for batch_id, batch in enumerate(pd.read_csv('Data/articles1.csv',
+                                                     chunksize=CHUNKSIZE)):
+            preprocessed_batch = batch[['content']].applymap(preprocess)
+            preprocessed_batch.to_csv(f'Data/stemmed_blocks/{batch_id}.csv')
+            pbar.update()
+        pbar.close()
+        print('Обработка текстов завершилась')
+        print('Создание обратного индекса')
         create_full_index()
+        print('Создание обратного индекса завершилось'
         
     polish_query = polish_notation_reverse(args)
     terms = list()
