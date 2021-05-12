@@ -9,8 +9,6 @@ pip ( for "pip install")
 
 ## Installing
 
-Download file https://drive.google.com/file/d/1gJU-kUmfGJNiiGUzU72lv0lEWxk8r71G/view?usp=sharing and paste it into a folder 'Data'
-
 ```shell
 git clone https://github.com/MakuhIlyukh/amb_search
 
