@@ -1,7 +1,3 @@
-import sys
-from Core.operators import Operators
-
-
 def search_or(x, y):
     return sorted(list(set(x).union(y)))
 
@@ -9,12 +5,13 @@ def search_or(x, y):
 def search_and(x, y):
     return sorted(list(set(x).intersection(y)))
 
+
 def search_not(x, texts_number):
-    ans = []
+    ans_not = []
     for i in range(texts_number):
         if i not in x:
-            ans.append(i)
-    return ans
+            ans_not.append(i)
+    return ans_not
 
 
 def search(polish_value, texts_number):

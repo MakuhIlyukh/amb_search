@@ -2,65 +2,73 @@ from nltk.corpus import stopwords
 from Core.operators import Operators
 
 
-def polish_notation_reverse(input_string):
-    lex = parse(input_string)
-    s = []
-    r = []
-    operators = Operators.list() + ["(", ")"]
-    for a in lex:
-        if a == "(":
-            s = [a] + s
-        elif a in operators:
-            if not s:
-                s = [a]
-            elif a == ")":
-                while True:
-                    q = s[0]
-                    s = s[1:]
-                    if q == "(":
-                        break
-                    r += [q]
-            elif prior(s[0]) < prior(a):
-                s = [a] + s
-            else:
-                while True:
-                    if not s:
-                        break
-                    q = s[0]
-                    r += [q]
-                    s = s[1:]
-                    if prior(q) == prior(a):
-                        break
-                s = [a] + s
+def parse(input_string):
+    result_string = []
+    for value in input_string.split():
+        if value in set(stopwords.words("english")):
+            continue
+        if "(" in value:
+            result_string += ['(' * value.count('(')]
+            result_string += [value.replace('(', "")]
+        elif ")" in value:
+            result_string += [value.replace(')', "")]
+            result_string += [')' * value.count(')')]
         else:
-            r += [a]
-    while s:
-        q = s[0]
-        r += [q]
-        s = s[1:]
-    return r
+            result_string += [value]
+    return result_string
 
 
 def prior(operation):
-    if operation == "OR":
+    if operation == "(":
+        return 0
+    elif operation == "OR":
         return 1
     elif operation == "AND" or operation == "NOT":
         return 2
-    elif operation == "(":
-        return 0
 
 
-def parse(s):
-    lex = []
-    for a in s.split():
-        if a in set(stopwords.words("english")):
-            continue
-        if "(" in a:
-            lex += ['(' * a.count('(')]
-            lex += [a.replace('(', "")]
-        elif ")" in a:
-            lex += [a.replace(')', "")]
-            lex += [')' * a.count(')')]
+def polish_notation_reverse(input_string):
+    parsed = parse(input_string)
+    help_string = []
+    result_string = []
+    operators = Operators.list() + ["(", ")"]
+
+    for symbol in parsed:
+        if symbol == "(":
+            help_string = [symbol] + help_string
+
+        elif symbol in operators:
+            if not help_string:
+                help_string = [symbol]
+
+            elif prior(help_string[0]) < prior(symbol):
+                help_string = [symbol] + help_string
+
+            elif symbol == ")":
+                while True:
+                    temp = help_string[0]
+                    help_string = help_string[1:]
+                    if temp == "(":
+                        break
+                    result_string += [temp]
+
+            else:
+                while True:
+                    if not help_string:
+                        break
+                    temp = help_string[0]
+                    result_string += [temp]
+                    help_string = help_string[1:]
+                    if prior(temp) == prior(symbol):
+                        break
+
+                help_string = [symbol] + help_string
         else:
-            lex += [a]
-    return lex
+            result_string += [symbol]
+
+    while help_string:
+        temp = help_string[0]
+        result_string += [temp]
+        help_string = help_string[1:]
+
+    return result_string

@@ -1,14 +1,8 @@
 import json
 from ast import literal_eval
 import pandas as pd
-import ast
 from Core.constants import (PATH_TO_STEMMED_BLOCK, PATH_TO_INVERTED_INDEX,
                             BLOCKS_NUMBER)
-
-
-def load_inverted_index_from_file(self, letter: str):
-    with open(r'./OutputData/' + letter + '.txt', 'r') as f:
-        self.inverted_index[letter] = ast.literal_eval(f.read())
 
 
 def load_block(id):
