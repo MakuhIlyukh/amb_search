@@ -36,14 +36,9 @@ def polish_notation_reverse(input_string):
     for symbol in parsed:
         if symbol == "(":
             help_string = [symbol] + help_string
-
         elif symbol in operators:
             if not help_string:
                 help_string = [symbol]
-
-            elif prior(help_string[0]) < prior(symbol):
-                help_string = [symbol] + help_string
-
             elif symbol == ")":
                 while True:
                     temp = help_string[0]
@@ -51,7 +46,8 @@ def polish_notation_reverse(input_string):
                     if temp == "(":
                         break
                     result_string += [temp]
-
+            elif prior(help_string[0]) < prior(symbol):
+                help_string = [symbol] + help_string
             else:
                 while True:
                     if not help_string:
