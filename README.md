@@ -8,13 +8,17 @@ git (for for "git clone")
 pip ( for "pip install")
 
 ## Installing
+
 ```shell
 git clone https://github.com/MakuhIlyukh/amb_search
 
 pip install -r requirements.txt
 
 cd Information_searcher
+
 ```
+
+Download file (dataset) https://drive.google.com/file/d/1gJU-kUmfGJNiiGUzU72lv0lEWxk8r71G/view?usp=sharing and paste it into a folder 'Data'
 
 ## Using
 
