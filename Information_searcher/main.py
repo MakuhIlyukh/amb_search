@@ -7,8 +7,6 @@ from Core.parse_arguments import polish_notation_reverse
 from Core.searching import search
 from Core.constants import CHUNKSIZE, BLOCKS_NUMBER
 from Core.preprocessing import preprocess
-from enum import Enum
-import sys
 import Core.constants
 from Core.operators import Operators
 from termcolor import colored
@@ -31,6 +29,8 @@ if __name__ == '__main__':
             pbar.update()
         pbar.close()
         print('Обработка текстов завершилась')
+
+    if not os.path.exists('Data/inv_index/full.json'):
         print('Создание обратного индекса')
         create_full_index()
         print('Создание обратного индекса завершилось')
@@ -48,25 +48,28 @@ if __name__ == '__main__':
                 polish_query[i] = []
             else:
                 polish_query[i] = inverted_index[polish_query[i]]
-    ans = search(polish_query, Core.constants.TEXTS_NUMBER)
-    if not ans:
-        print("Request not found")
-        sys.exit(1)
-    for i in ans:
-        df = pd.read_csv(f'Data/stemmed_blocks/{i // Core.constants.CHUNKSIZE}.csv', index_col=0)
-        text = ""
-        for j in df.loc[i, 'content']:
-            if j not in "[]',":
-                text += j
-        indexes = []
-        for j in terms:
-            indexes.append(j + " " + str([i for i, value in enumerate(text.split()) if value == j]))
-            text = text.replace(' ' + j + ' ', colored(' ' + j + ' ', 'red'))
-            text = text.replace(j + ' ', colored(j + ' ', 'red'))
-            text = text.replace(' ' + j, colored(' ' + j, 'red'))
 
-        print(colored(f"Document number {i}\n", 'yellow'), text)
-        for value in indexes:
-            print(value)
-        print()
-    print("finish")
+    ans = search(polish_query, Core.constants.TEXTS_NUMBER)
+
+    if not ans:
+        print("Запрос не найден")
+    else:
+        for i in ans:
+            df = pd.read_csv(f'Data/stemmed_blocks/{i // Core.constants.CHUNKSIZE}.csv', index_col=0)
+            text = ""
+            for j in df.loc[i, 'content']:
+                if j not in "[]',":
+                    text += j
+            indexes = []
+            for j in terms:
+                indexes.append(j + " " + str([i for i, value in enumerate(text.split()) if value == j]))
+                text = text.replace(' ' + j + ' ', colored(' ' + j + ' ', 'red'))
+                text = text.replace(j + ' ', colored(j + ' ', 'red'))
+                text = text.replace(' ' + j, colored(' ' + j, 'red'))
+
+            print(colored(f"Document number {i}\n", 'yellow'), text)
+            for value in indexes:
+                print(value)
+            print()
+
+    print("Программа завершила работу")
