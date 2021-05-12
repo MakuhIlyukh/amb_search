@@ -33,7 +33,7 @@ if __name__ == '__main__':
         print('Обработка текстов завершилась')
         print('Создание обратного индекса')
         create_full_index()
-        print('Создание обратного индекса завершилось'
+        print('Создание обратного индекса завершилось')
         
     polish_query = polish_notation_reverse(args)
     terms = list()
