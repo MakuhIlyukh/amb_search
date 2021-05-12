@@ -10,6 +10,7 @@ import sys
 import Core.constants
 from Core.operators import Operators
 from termcolor import colored
+import os
 
 
 if __name__ == '__main__':
