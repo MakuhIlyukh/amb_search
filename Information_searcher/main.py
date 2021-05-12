@@ -16,8 +16,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("echo")
     args = parser.parse_args().echo
-
-    create_full_index()
+    
+    if not os.path.exists('Data/stemmed_blocks/0.csv'):
+        create_full_index()
+        
     polish_query = polish_notation_reverse(args)
     terms = list()
     porter = PorterStemmer()
