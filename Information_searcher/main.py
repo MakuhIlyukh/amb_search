@@ -55,6 +55,7 @@ if __name__ == '__main__':
     if not ans:
         print("Запрос не найден")
     else:
+        print("Запрос найден в " + str(len(ans)) + " файлах")
         for i in ans:
             df = pd.read_csv(f'Data/stemmed_blocks/{i // Core.constants.CHUNKSIZE}.csv', index_col=0)
             text = ""
@@ -73,7 +74,9 @@ if __name__ == '__main__':
                 for value in indexes:
                     print(value)
                 print()
-            resultsAmount += 1
+                resultsAmount += 1
+            else:
+                break
 
-    print(resultsAmount)
+    print("Выведено топ 10 запросов")
     print("Программа завершила работу")
