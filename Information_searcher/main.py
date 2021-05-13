@@ -68,7 +68,7 @@ if __name__ == '__main__':
                 text = text.replace(j + ' ', colored(j + ' ', 'red'))
                 text = text.replace(' ' + j, colored(' ' + j, 'red'))
 
-            if resultsAmount <= 10:
+            if resultsAmount < 10:
                 print(colored(f"Document number {i}\n", 'yellow'), text)
                 for value in indexes:
                     print(value)
