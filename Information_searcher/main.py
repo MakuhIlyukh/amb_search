@@ -51,6 +51,7 @@ if __name__ == '__main__':
 
     ans = search(polish_query, Core.constants.TEXTS_NUMBER)
 
+    resultsAmount = 0
     if not ans:
         print("Запрос не найден")
     else:
@@ -67,9 +68,12 @@ if __name__ == '__main__':
                 text = text.replace(j + ' ', colored(j + ' ', 'red'))
                 text = text.replace(' ' + j, colored(' ' + j, 'red'))
 
-            print(colored(f"Document number {i}\n", 'yellow'), text)
-            for value in indexes:
-                print(value)
-            print()
+            if resultsAmount <= 10:
+                print(colored(f"Document number {i}\n", 'yellow'), text)
+                for value in indexes:
+                    print(value)
+                print()
+            resultsAmount += 1
 
+    print(resultsAmount)
     print("Программа завершила работу")
